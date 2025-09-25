@@ -1,0 +1,227 @@
+/* ====================================
+   1. Estilos Gerais e Tipografia
+   ==================================== */
+
+body {
+  font-family: 'Roboto', Arial, sans-serif;
+  margin: 20px;
+  background-color: #f0f2f5;
+}
+
+h1 {
+  color: #0A2246;
+}
+
+mark {
+  background-color: #f1c40f; /* Amarelo */
+  color: black;
+  padding: 2px;
+  border-radius: 4px;
+}
+
+/* ====================================
+   2. Formulários e Filtros
+   ==================================== */
+
+form {
+  margin-bottom: 20px;
+}
+
+input, button, select {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background-color: #c9e4e2;
+  color: black;
+}
+
+.filter-container input {
+  flex-grow: 2; /* Faz o campo de texto ser maior */
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.filter-container select,
+.filter-container button {
+  flex-grow: 1; /* Faz os outros campos terem o mesmo tamanho */
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* ====================================
+   3. Botões
+   ==================================== */
+
+.btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background-color: #00A69F;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn:hover {
+  background-color: #016a65;
+}
+
+/* ====================================
+   4. Tabela
+   ==================================== */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 1px solid #3b3b3b;
+  border-radius: 12px;
+  overflow: hidden;
+  table-layout: fixed;
+  resize: horizontal;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+thead {
+  background-color: #0A2246;
+  color: white;
+}
+
+th, td {
+  border: 1px solid #dee2e6;
+  padding: 12px 15px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+}
+
+.col-check      { width: 5%; }
+.col-priority   { width: 10%; }
+.col-title      { width: 25%; }
+.col-date       { width: 15%; }
+.col-description{ width: 25%; }
+.col-actions    { width: 5%; }
+
+tbody tr:nth-child(even) {
+  background-color: #f8f9fa; /* Um cinza muito claro */
+}
+
+tbody tr:hover {
+  background-color: #e9ecef; /* Um cinza um pouco mais escuro */
+}
+
+.completed {
+  text-decoration: line-through;
+  color: gray;
+}
+
+.detailsRow td {
+  padding: 12px;
+  font-size: 0.9em;
+  color: #333;
+}
+
+.resizer {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  width: 8px;
+  height: 100%;
+  cursor: col-resize;
+  user-select: none;
+}
+
+/* ====================================
+   5. Indicadores e Efeitos
+   ==================================== */
+
+.priority-indicator {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.priority-baixa { background-color: #28a745; }
+.priority-media { background-color: #ffc107; }
+.priority-alta { background-color: #dc3545; }
+
+.flash-save {
+  animation: flash-green 1s ease-out;
+}
+
+@keyframes flash-green {
+  0% {
+    background-color: #d4edda;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+/* ====================================
+   6. Menus e Pop-ups
+   ==================================== */
+
+.settingsMenuContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.settingsIcon {
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px;
+}
+
+.settingsMenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #f4f4f4;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 5px;
+  z-index: 100;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.settingsMenu button {
+  display: block;
+  width: 100%;
+  padding: 6px 12px;
+  margin: 2px 0;
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.settingsMenu button:hover {
+  background-color: #ddd;
+}
+
+/* ====================================
+   7. Elementos Flutuantes
+   ==================================== */
+
+#fixed-logo {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+#fixed-logo img {
+  width: 80px;
+  height: auto;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}

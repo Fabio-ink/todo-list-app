@@ -1,0 +1,23 @@
+# Arquivos do Sistema Operacional
+# Ignora arquivos de metadados do macOS e Windows
+.DS_Store
+Thumbs.db
+
+# Configurações de Editores de Código
+# Ignora a pasta de configurações do VS Code
+.vscode/
+
+# Arquivos de Log
+# Ignora arquivos de log que podem ser gerados
+*.log
+npm-debug.log*
+
+# Dependências (Importante para o futuro!)
+# Se um dia você usar Node.js/npm, esta linha é a mais importante.
+# Ela impede que milhares de arquivos de dependências sejam enviados.
+node_modules/
+
+# Arquivos de Build (para o futuro)
+# Se você usar ferramentas que geram uma versão final do site
+dist/
+build/

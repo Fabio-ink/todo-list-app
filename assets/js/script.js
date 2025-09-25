@@ -1,0 +1,345 @@
+// --- ELEMENTOS GLOBAIS ---
+console.log("Script iniciado.");
+const form = document.getElementById("taskForm");
+const tableBody = document.getElementById("taskTableBody");
+const taskRowTemplate = document.getElementById("taskRowTemplate");
+
+// --- EVENT LISTENERS PRINCIPAIS ---
+
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM completamente carregado. Iniciando funções.");
+  applyFilters(); // Carga inicial de tarefas já com filtro
+  setupResizableFeatures();
+});
+
+form.addEventListener("submit", function (e) {
+  console.log("Formulário enviado.");
+  e.preventDefault();
+
+  const task = {
+    id: Date.now(),
+    title: document.getElementById("title").value,
+    startDate: document.getElementById("startDate").value,
+    endDate: document.getElementById("endDate").value,
+    description: document.getElementById("description").value,
+    priority: document.getElementById("priority").value,
+    completed: false
+  };
+  console.log("Objeto da tarefa criado:", task);
+
+  const tasks = getTasks();
+  tasks.push(task);
+  updateTasks(tasks);
+
+  applyFilters(); // Re-renderiza a tabela com a nova tarefa
+  form.reset();
+});
+
+tableBody.addEventListener("change", function(e) {
+  if (e.target.classList.contains("checkTask")) {
+    const row = e.target.closest("tr");
+    const id = Number(row.dataset.id);
+    let tasks = getTasks();
+    tasks = tasks.map(task =>
+      task.id === id ? { ...task, completed: e.target.checked } : task
+    );
+    updateTasks(tasks);
+    applyFilters(); // Re-renderiza para refletir a mudança de status no filtro
+  }
+});
+
+tableBody.addEventListener("click", function (e) {
+  const target = e.target;
+  const row = target.closest("tr");
+
+  if (target.classList.contains("saveBtn")) {
+    saveEditMode(row);
+  }
+
+  if (target.classList.contains("settingsIcon")) {
+    openSettingsMenu(target);
+  }
+});
+
+
+// --- FUNÇÕES DE RENDERIZAÇÃO E UI ---
+
+function renderTasks(tasks) {
+  console.log("Renderizando tarefas na tabela:", tasks.length);
+  tableBody.innerHTML = ""; // Limpa a tabela antes de desenhar
+  tasks.forEach(task => {
+    const row = document.importNode(taskRowTemplate.content, true).querySelector('tr');
+    
+    row.dataset.id = task.id;
+    row.querySelector(".checkTask").checked = task.completed;
+    row.querySelector(".priority .priority-indicator").className = `priority-indicator priority-${task.priority}`;
+    row.querySelector(".title").textContent = task.title;
+    row.querySelector(".startDate").textContent = task.startDate;
+    row.querySelector(".endDate").textContent = task.endDate;
+    row.querySelector(".description").textContent = task.description;
+
+    if (task.completed) {
+      row.classList.add("completed");
+    }
+
+    tableBody.appendChild(row);
+  });
+}
+
+function enterEditMode(row) {
+  const titleCell = row.querySelector(".title");
+  const startDateCell = row.querySelector(".startDate");
+  const endDateCell = row.querySelector(".endDate");
+  const descCell = row.querySelector(".description");
+  const priorityCell = row.querySelector(".priority");
+  const currentPriority = priorityCell.querySelector("span").className.split('priority-')[2];
+
+  titleCell.innerHTML = `<input type="text" value="${titleCell.textContent}">`;
+  startDateCell.innerHTML = `<input type="date" value="${startDateCell.textContent}">`;
+  endDateCell.innerHTML = `<input type="date" value="${endDateCell.textContent}">`;
+  descCell.innerHTML = `<input type="text" value="${descCell.textContent}">`;
+  priorityCell.innerHTML = `
+    <select class="edit-priority">
+      <option value="baixa" ${currentPriority === 'baixa' ? 'selected' : ''}>Baixa</option>
+      <option value="media" ${currentPriority === 'media' ? 'selected' : ''}>Média</option>
+      <option value="alta" ${currentPriority === 'alta' ? 'selected' : ''}>Alta</option>
+    </select>
+  `;
+
+  const actionsCell = row.querySelector(".actionsCell");
+  actionsCell.innerHTML = `<button class="saveBtn btn">Salvar</button>`;
+}
+
+function saveEditMode(row) {
+  const id = Number(row.dataset.id);
+
+  const updatedTask = {
+      title: row.querySelector(".title input").value,
+      startDate: row.querySelector(".startDate input").value,
+      endDate: row.querySelector(".endDate input").value,
+      description: row.querySelector(".description input").value,
+      priority: row.querySelector(".edit-priority").value,
+  };
+
+  let tasks = getTasks();
+  tasks = tasks.map(task =>
+    task.id === id ? { ...task, ...updatedTask } : task
+  );
+  updateTasks(tasks);
+
+  applyFilters(); // Re-renderiza a tabela para mostrar os dados atualizados
+}
+
+function openSettingsMenu(icon) {
+  document.querySelectorAll(".floatingMenu").forEach(m => m.remove());
+  const row = icon.closest("tr");
+  const menu = document.createElement("div");
+  menu.classList.add("floatingMenu");
+  menu.innerHTML = `
+    <button class="menuEditBtn btn">Editar</button>
+    <button class="menuDeleteBtn btn">Excluir</button>
+    <button class="menuDetailsBtn btn">Detalhes</button>
+  `;
+  document.body.appendChild(menu);
+
+  const rect = icon.getBoundingClientRect();
+  menu.style.position = "absolute";
+  menu.style.top = `${rect.bottom + window.scrollY}px`;
+  menu.style.left = `${rect.left + window.scrollX}px`;
+  menu.style.zIndex = 1000;
+  menu.style.backgroundColor = "#f4f4f4";
+  menu.style.border = "1px solid #ccc";
+  menu.style.borderRadius = "8px";
+  menu.style.padding = "5px";
+  menu.style.boxShadow = "0 2px 6px rgba(0,0,0,0.2)";
+
+  menu.querySelector(".menuEditBtn").addEventListener("click", () => {
+    enterEditMode(row);
+    menu.remove();
+  });
+  menu.querySelector(".menuDeleteBtn").addEventListener("click", () => {
+    const id = Number(row.dataset.id);
+    let tasks = getTasks();
+    tasks = tasks.filter(task => task.id !== id);
+    updateTasks(tasks);
+    applyFilters(); // Re-renderiza a tabela sem a tarefa excluída
+    menu.remove();
+  });
+  menu.querySelector(".menuDetailsBtn").addEventListener("click", () => {
+    toggleDetails(row);
+    menu.remove();
+  });
+
+  setTimeout(() => {
+    document.addEventListener("click", function closeMenu(ev) {
+      if (!menu.contains(ev.target) && ev.target !== icon) {
+        menu.remove();
+        document.removeEventListener("click", closeMenu);
+      }
+    });
+  }, 0);
+}
+
+function toggleDetails(row) {
+  let nextRow = row.nextElementSibling;
+  if (nextRow && nextRow.classList.contains("detailsRow")) {
+    nextRow.remove();
+    return;
+  }
+  const id = Number(row.dataset.id);
+  const tasks = getTasks();
+  const task = tasks.find(t => t.id === id);
+
+  if (!task) return;
+
+  const detailsRow = document.createElement("tr");
+  detailsRow.classList.add("detailsRow");
+  detailsRow.innerHTML = `<td colspan="7" style="background-color:#f0f0f0; padding: 12px;"><strong>Título:</strong> ${task.title}<br><strong>Data Início:</strong> ${task.startDate}<br><strong>Data Final:</strong> ${task.endDate}<br><strong>Descrição:</strong> ${task.description}</td>`;
+  row.after(detailsRow);
+}
+
+// --- FUNÇÕES DE PERSISTÊNCIA (LocalStorage) ---
+
+function getTasks() {
+  const tasks = localStorage.getItem("tasks");
+  return tasks ? JSON.parse(tasks) : [];
+}
+
+function updateTasks(tasks) {
+  console.log("Atualizando tarefas no localStorage...");
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+  console.log("Tarefas atualizadas. Conteúdo:", localStorage.getItem("tasks"));
+}
+
+// --- FUNCIONALIDADES DE REDIMENSIONAMENTO ---
+
+function setupResizableFeatures() {
+  console.log("Configurando funcionalidades de redimensionamento.");
+  const table = document.querySelector("table");
+  const savedTableWidth = localStorage.getItem("tableWidth");
+  if (savedTableWidth) {
+    table.style.width = savedTableWidth;
+  }
+  let debounceTimer;
+  const tableResizeObserver = new ResizeObserver(() => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      const currentWidth = window.getComputedStyle(table).width;
+      localStorage.setItem("tableWidth", currentWidth);
+    }, 500);
+  });
+  tableResizeObserver.observe(table);
+
+  const headers = table.querySelectorAll("th");
+  headers.forEach(header => {
+    const resizer = document.createElement("div");
+    resizer.classList.add("resizer");
+    header.appendChild(resizer);
+    resizer.addEventListener("mousedown", initColumnResize);
+  });
+
+  function initColumnResize(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    const header = e.target.parentElement;
+    const startX = e.pageX;
+    const startWidth = header.offsetWidth;
+    document.addEventListener("mousemove", doDrag);
+    document.addEventListener("mouseup", stopDrag);
+    function doDrag(e) {
+      const newWidth = startWidth + (e.pageX - startX);
+      if (newWidth > 40) {
+        header.style.width = `${newWidth}px`;
+      }
+    }
+    function stopDrag() {
+      document.removeEventListener("mousemove", doDrag);
+      document.removeEventListener("mouseup", stopDrag);
+    }
+  }
+}
+
+// --- FUNCIONALIDADE DE EXPORTAÇÃO ---
+
+const exportCsvBtn = document.getElementById('exportCsvBtn');
+exportCsvBtn.addEventListener('click', exportTasksToCSV);
+
+function exportTasksToCSV() {
+  const tasks = getTasks();
+
+  if (tasks.length === 0) {
+    alert("Não há tarefas para exportar.");
+    return;
+  }
+
+  const columns = [
+    { key: 'title',       displayName: 'titulo' },
+    { key: 'startDate',   displayName: 'dia inicio' },
+    { key: 'endDate',     displayName: 'dia final' },
+    { key: 'description', displayName: 'descrição' },
+    { key: 'priority',    displayName: 'prioridade' }
+  ];
+
+  const formatCsvCell = (cellData) => {
+    const stringData = String(cellData || '');
+    if (stringData.includes(';') || stringData.includes('"') || stringData.includes('\n')) {
+      return `"${stringData.replace(/"/g, '""')}"`;
+    }
+    return stringData;
+  };
+
+  const headerRow = columns.map(col => col.displayName).join(';');
+  const dataRows = tasks.map(task =>
+    columns.map(col => formatCsvCell(task[col.key])).join(';')
+  );
+  const csvString = [headerRow, ...dataRows].join('\n');
+  const blob = new Blob(['\uFEFF' + csvString], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `tarefas-backup-${new Date().toISOString().slice(0, 10)}.csv`;
+
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// --- SISTEMA DE FILTRO (REATORADO) ---
+
+const filterInput = document.getElementById('filterInput');
+const filterStatus = document.getElementById('filterStatus');
+const filterPriority = document.getElementById('filterPriority');
+const searchBtn = document.getElementById('searchBtn');
+const clearBtn = document.getElementById('clearBtn');
+
+searchBtn.addEventListener('click', applyFilters);
+
+clearBtn.addEventListener('click', () => {
+  filterInput.value = '';
+  filterStatus.value = 'all';
+  filterPriority.value = 'all';
+  applyFilters();
+});
+
+function applyFilters() {
+  const allTasks = getTasks();
+  const filterText = filterInput.value.trim().toLowerCase();
+  const statusValue = filterStatus.value;
+  const priorityValue = filterPriority.value;
+
+  const filteredTasks = allTasks.filter(task => {
+    const textMatches = (filterText === '') ? true : 
+      (task.title.toLowerCase().includes(filterText) || task.description.toLowerCase().includes(filterText));
+    
+    const statusMatches = (statusValue === 'all') || 
+      (statusValue === 'completed' && task.completed) || 
+      (statusValue === 'pending' && !task.completed);
+      
+    const priorityMatches = (priorityValue === 'all') || (priorityValue === task.priority);
+
+    return textMatches && statusMatches && priorityMatches;
+  });
+
+  renderTasks(filteredTasks);
+}
