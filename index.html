@@ -7,56 +7,72 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
   </head>
 <body>
-  <h1>BackLog Implantação</h1>
 
-  <form id="taskForm">
-    <label for="title">Título:</label>
-    <input type="text" id="title" placeholder="Título da tarefa" required>
-
-    <label for="startDate">Data de Início:</label>
-    <input type="date" id="startDate" required>
-
-    <label for="endDate">Data Final:</label>
-    <input type="date" id="endDate" required>
-
-    <label for="description">Descrição:</label>
-    <input type="text" id="description" placeholder="Detalhes da tarefa">
-
-    <label for="priority">Prioridade:</label>
-    <select id="priority" required>
-      <option value="baixa">Baixa</option>
-      <option value="media" selected>Média</option>
-      <option value="alta">Alta</option>
-    </select>
-
-    <button type="submit" class="btn">Adicionar</button>
-  </form>
+  <div class="form-container">
+    <h3 style="text-align: center; color: #0A2246; margin-bottom: 20px;">Adicionar Nova Tarefa</h3>
+    <form id="taskForm">
+      <div class="form-grid">
+        <div class="form-group gc-3">
+          <label for="title">Título:</label>
+          <input type="text" id="title" placeholder="O que precisa ser feito?" required>
+        </div>
+        <div class="form-group gc-1">
+          <label for="priority">Prioridade:</label>
+          <select id="priority" required>
+            <option value="baixa">Baixa</option>
+            <option value="media" selected>Média</option>
+            <option value="alta">Alta</option>
+          </select>
+        </div>
+        <div class="form-group gc-1">
+          <label for="startDate">Data de Início:</label>
+          <input type="date" id="startDate" required>
+        </div>
+        <div class="form-group gc-1">
+          <label for="endDate">Data Final:</label>
+          <input type="date" id="endDate" required>
+        </div>
+        <div class="form-group gc-5">
+          <label for="description">Descrição:</label>
+          <input type="text" id="description" placeholder="Adicione mais detalhes...">
+        </div>
+        <div class="form-group gc-1 button-group">
+          <button type="submit" class="btn btn-primary">Adicionar</button>
+        </div>
+      </div>
+    </form>
+  </div>
 
   <div class="export-buttons" style="margin-bottom: 20px;">
     <button id="exportCsvBtn" class="btn">Exportar (CSV)</button>
   </div>
 
-  <div class="filter-container" style="margin-bottom: 20px;">
-    <label for="filterInput">Filtrar:</label>
-    <input type="text" id="filterInput" placeholder="Buscar por título/descrição...">
-
-    <label for="filterStatus">Status:</label>
-    <select id="filterStatus">
-      <option value="all">Todos</option>
-      <option value="pending">Pendentes</option>
-      <option value="completed">Concluídas</option>
-    </select>
-
-    <label for="filterPriority">Prioridade:</label>
-    <select id="filterPriority">
-      <option value="all">Todas</option>
-      <option value="baixa">Baixa</option>
-      <option value="media">Média</option>
-      <option value="alta">Alta</option>
-    </select>
-
-    <button id="searchBtn" class="btn">Buscar</button>
-    <button id="clearBtn" class="btn">Limpar</button>
+  <div class="filter-container">
+    <div class="filter-group">
+      <label for="filterInput">Buscar por Título/Descrição</label>
+      <input type="text" id="filterInput" placeholder="...">
+    </div>
+    <div class="filter-group">
+      <label for="filterStatus">Status</label>
+      <select id="filterStatus">
+        <option value="all">Todos</option>
+        <option value="pending">Pendentes</option>
+        <option value="completed">Concluídas</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="filterPriority">Prioridade</label>
+      <select id="filterPriority">
+        <option value="all">Todas</option>
+        <option value="baixa">Baixa</option>
+        <option value="media">Média</option>
+        <option value="alta">Alta</option>
+      </select>
+    </div>
+    <div class="filter-buttons">
+      <button id="searchBtn" class="btn">Buscar</button>
+      <button id="clearBtn" class="btn">Limpar</button>
+    </div>
   </div>
 
   <table>

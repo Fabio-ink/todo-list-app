@@ -4,6 +4,13 @@ const form = document.getElementById("taskForm");
 const tableBody = document.getElementById("taskTableBody");
 const taskRowTemplate = document.getElementById("taskRowTemplate");
 
+// --- FUNÇÕES AUXILIARES ---
+function formatDate(dateString) {
+  if (!dateString) return 'N/A';
+  const [year, month, day] = dateString.split('-');
+  return `${day}/${month}/${year}`;
+}
+
 // --- EVENT LISTENERS PRINCIPAIS ---
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -74,8 +81,8 @@ function renderTasks(tasks) {
     row.querySelector(".checkTask").checked = task.completed;
     row.querySelector(".priority .priority-indicator").className = `priority-indicator priority-${task.priority}`;
     row.querySelector(".title").textContent = task.title;
-    row.querySelector(".startDate").textContent = task.startDate;
-    row.querySelector(".endDate").textContent = task.endDate;
+    row.querySelector(".startDate").textContent = formatDate(task.startDate);
+    row.querySelector(".endDate").textContent = formatDate(task.endDate);
     row.querySelector(".description").textContent = task.description;
 
     if (task.completed) {
@@ -87,22 +94,27 @@ function renderTasks(tasks) {
 }
 
 function enterEditMode(row) {
+  const id = Number(row.dataset.id);
+  const tasks = getTasks();
+  const task = tasks.find(t => t.id === id);
+
+  if (!task) return;
+
   const titleCell = row.querySelector(".title");
   const startDateCell = row.querySelector(".startDate");
   const endDateCell = row.querySelector(".endDate");
   const descCell = row.querySelector(".description");
   const priorityCell = row.querySelector(".priority");
-  const currentPriority = priorityCell.querySelector("span").className.split('priority-')[2];
 
-  titleCell.innerHTML = `<input type="text" value="${titleCell.textContent}">`;
-  startDateCell.innerHTML = `<input type="date" value="${startDateCell.textContent}">`;
-  endDateCell.innerHTML = `<input type="date" value="${endDateCell.textContent}">`;
-  descCell.innerHTML = `<input type="text" value="${descCell.textContent}">`;
+  titleCell.innerHTML = `<input type="text" value="${task.title}">`;
+  startDateCell.innerHTML = `<input type="date" value="${task.startDate}">`;
+  endDateCell.innerHTML = `<input type="date" value="${task.endDate}">`;
+  descCell.innerHTML = `<input type="text" value="${task.description}">`;
   priorityCell.innerHTML = `
     <select class="edit-priority">
-      <option value="baixa" ${currentPriority === 'baixa' ? 'selected' : ''}>Baixa</option>
-      <option value="media" ${currentPriority === 'media' ? 'selected' : ''}>Média</option>
-      <option value="alta" ${currentPriority === 'alta' ? 'selected' : ''}>Alta</option>
+      <option value="baixa" ${task.priority === 'baixa' ? 'selected' : ''}>Baixa</option>
+      <option value="media" ${task.priority === 'media' ? 'selected' : ''}>Média</option>
+      <option value="alta" ${task.priority === 'alta' ? 'selected' : ''}>Alta</option>
     </select>
   `;
 
@@ -194,7 +206,31 @@ function toggleDetails(row) {
 
   const detailsRow = document.createElement("tr");
   detailsRow.classList.add("detailsRow");
-  detailsRow.innerHTML = `<td colspan="7" style="background-color:#f0f0f0; padding: 12px;"><strong>Título:</strong> ${task.title}<br><strong>Data Início:</strong> ${task.startDate}<br><strong>Data Final:</strong> ${task.endDate}<br><strong>Descrição:</strong> ${task.description}</td>`;
+
+  detailsRow.innerHTML = `
+    <td colspan="7">
+      <div class="details-wrapper">
+        <dl>
+          <div class="detail-pair">
+            <dt>Título</dt>
+            <dd>${task.title}</dd>
+          </div>
+          <div class="detail-pair">
+            <dt>Data de Início</dt>
+            <dd>${formatDate(task.startDate)}</dd>
+          </div>
+          <div class="detail-pair">
+            <dt>Data Final</dt>
+            <dd>${formatDate(task.endDate)}</dd>
+          </div>
+          <div class="detail-pair description-pair">
+            <dt>Descrição</dt>
+            <dd>${task.description || 'N/A'}</dd>
+          </div>
+        </dl>
+      </div>
+    </td>`;
+
   row.after(detailsRow);
 }
 

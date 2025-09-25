@@ -1,5 +1,7 @@
 # To-Do List Avançada
 
+**[Acesse a demonstração ao vivo](https://spectacular-raindrop-62a69b.netlify.app/)**
+
 Um aplicativo de lista de tarefas (To-Do List) completo e interativo, desenvolvido com HTML, CSS e JavaScript puros. Ele permite que os usuários gerenciem suas tarefas diárias de forma eficiente, com recursos avançados como filtros, prioridades, e exportação de dados.
 
 ## ✨ Funcionalidades
@@ -15,7 +17,7 @@ Um aplicativo de lista de tarefas (To-Do List) completo e interativo, desenvolvi
 
 ## 🚀 Como Usar
 
-1.  Abra o arquivo `index.html` em seu navegador.
+1.  **Acesse a [demonstração ao vivo](https://spectacular-raindrop-62a69b.netlify.app/)** ou abra o arquivo `index.html` localmente.
 2.  Use o formulário no topo da página para adicionar novas tarefas.
 3.  Gerencie suas tarefas diretamente na tabela:
     *   Marque a caixa de seleção para concluir uma tarefa.
