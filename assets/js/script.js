@@ -29,6 +29,7 @@ form.addEventListener("submit", function (e) {
     startDate: document.getElementById("startDate").value,
     endDate: document.getElementById("endDate").value,
     description: document.getElementById("description").value,
+    etapa: document.getElementById("etapa").value,
     priority: document.getElementById("priority").value,
     completed: false
   };
@@ -84,6 +85,7 @@ function renderTasks(tasks) {
     row.querySelector(".startDate").textContent = formatDate(task.startDate);
     row.querySelector(".endDate").textContent = formatDate(task.endDate);
     row.querySelector(".description").textContent = task.description;
+    row.querySelector(".etapa").textContent = task.etapa;
 
     if (task.completed) {
       row.classList.add("completed");
@@ -104,12 +106,14 @@ function enterEditMode(row) {
   const startDateCell = row.querySelector(".startDate");
   const endDateCell = row.querySelector(".endDate");
   const descCell = row.querySelector(".description");
+  const etapaCell = row.querySelector(".etapa");
   const priorityCell = row.querySelector(".priority");
 
   titleCell.innerHTML = `<input type="text" value="${task.title}">`;
   startDateCell.innerHTML = `<input type="date" value="${task.startDate}">`;
   endDateCell.innerHTML = `<input type="date" value="${task.endDate}">`;
   descCell.innerHTML = `<input type="text" value="${task.description}">`;
+  etapaCell.innerHTML = `<input type="text" value="${task.etapa}">`;
   priorityCell.innerHTML = `
     <select class="edit-priority">
       <option value="baixa" ${task.priority === 'baixa' ? 'selected' : ''}>Baixa</option>
@@ -130,6 +134,7 @@ function saveEditMode(row) {
       startDate: row.querySelector(".startDate input").value,
       endDate: row.querySelector(".endDate input").value,
       description: row.querySelector(".description input").value,
+      etapa: row.querySelector(".etapa input").value,
       priority: row.querySelector(".edit-priority").value,
   };
 
@@ -313,6 +318,7 @@ function exportTasksToCSV() {
     { key: 'startDate',   displayName: 'dia inicio' },
     { key: 'endDate',     displayName: 'dia final' },
     { key: 'description', displayName: 'descrição' },
+    { key: 'etapa',       displayName: 'etapa' },
     { key: 'priority',    displayName: 'prioridade' }
   ];
 
@@ -358,13 +364,62 @@ clearBtn.addEventListener('click', () => {
   applyFilters();
 });
 
+// --- SORTING ---
+let currentSort = { column: 'startDate', direction: 'asc' };
+
+document.querySelectorAll(".sortable").forEach(header => {
+  header.addEventListener("click", () => {
+    const column = header.dataset.sort;
+    const direction = (currentSort.column === column && currentSort.direction === 'asc') ? 'desc' : 'asc';
+    currentSort = { column, direction };
+    applyFilters();
+    updateSortIcons();
+  });
+});
+
+function sortTasks(tasks) {
+  const { column, direction } = currentSort;
+  if (!column) return tasks;
+
+  const priorityOrder = { 'baixa': 1, 'media': 2, 'alta': 3 };
+
+  return tasks.sort((a, b) => {
+    let valA, valB;
+
+    if (column === 'priority') {
+      valA = priorityOrder[a.priority];
+      valB = priorityOrder[b.priority];
+    } else if (column.includes('Date')) {
+      valA = new Date(a[column]);
+      valB = new Date(b[column]);
+    } else {
+      valA = a[column].toLowerCase();
+      valB = b[column].toLowerCase();
+    }
+
+    if (valA < valB) return direction === 'asc' ? -1 : 1;
+    if (valA > valB) return direction === 'asc' ? 1 : -1;
+    return 0;
+  });
+}
+
+function updateSortIcons() {
+  document.querySelectorAll('.sort-icon').forEach(icon => {
+    icon.classList.remove('asc', 'desc');
+  });
+  const activeIcon = document.querySelector(`.sortable[data-sort="${currentSort.column}"] .sort-icon`);
+  if (activeIcon) {
+    activeIcon.classList.add(currentSort.direction);
+  }
+}
+
 function applyFilters() {
-  const allTasks = getTasks();
+  let allTasks = getTasks();
   const filterText = filterInput.value.trim().toLowerCase();
   const statusValue = filterStatus.value;
   const priorityValue = filterPriority.value;
 
-  const filteredTasks = allTasks.filter(task => {
+  let filteredTasks = allTasks.filter(task => {
     const textMatches = (filterText === '') ? true : 
       (task.title.toLowerCase().includes(filterText) || task.description.toLowerCase().includes(filterText));
     
@@ -377,5 +432,6 @@ function applyFilters() {
     return textMatches && statusMatches && priorityMatches;
   });
 
+  filteredTasks = sortTasks(filteredTasks);
   renderTasks(filteredTasks);
 }

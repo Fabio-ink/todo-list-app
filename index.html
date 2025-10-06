@@ -32,9 +32,13 @@
           <label for="endDate">Data Final:</label>
           <input type="date" id="endDate" required>
         </div>
-        <div class="form-group gc-5">
+        <div class="form-group gc-6">
           <label for="description">Descrição:</label>
           <input type="text" id="description" placeholder="Adicione mais detalhes...">
+        </div>
+        <div class="form-group gc-5">
+          <label for="etapa">Etapa:</label>
+          <input type="text" id="etapa" placeholder="Qual a etapa atual?">
         </div>
         <div class="form-group gc-1 button-group">
           <button type="submit" class="btn btn-primary">Adicionar</button>
@@ -79,11 +83,12 @@
     <thead>
       <tr>
         <th class="col-check">Check</th>
-        <th class="col-priority sortable" data-sort="priority">Prioridade</th>
+        <th class="col-priority sortable" data-sort="priority">Prioridade <span class="sort-icon"></span></th>
         <th class="col-title sortable" data-sort="title">Título</th>
-        <th class="col-date sortable" data-sort="startDate">Data Início</th>
-        <th class="col-date sortable" data-sort="endDate">Data Final</th>
+        <th class="col-date sortable" data-sort="startDate">Data Início <span class="sort-icon"></span></th>
+        <th class="col-date sortable" data-sort="endDate">Data Final <span class="sort-icon"></span></th>
         <th class="col-description">Descrição</th>
+        <th class="col-etapa">Etapa</th>
         <th class="col-actions">Ações</th>
       </tr>
     </thead>
@@ -104,6 +109,7 @@
       <td class="startDate"></td>
       <td class="endDate"></td>
       <td class="description"></td>
+      <td class="etapa"></td>
       <td class="actionsCell">
         <div class="settingsMenuContainer">
           <span class="settingsIcon">⚙️</span>
