@@ -257,21 +257,19 @@ function updateTasks(tasks) {
 function setupResizableFeatures() {
   console.log("Configurando funcionalidades de redimensionamento.");
   const table = document.querySelector("table");
-  const savedTableWidth = localStorage.getItem("tableWidth");
-  if (savedTableWidth) {
-    table.style.width = savedTableWidth;
-  }
-  let debounceTimer;
-  const tableResizeObserver = new ResizeObserver(() => {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      const currentWidth = window.getComputedStyle(table).width;
-      localStorage.setItem("tableWidth", currentWidth);
-    }, 500);
-  });
-  tableResizeObserver.observe(table);
 
+  // Carregar e aplicar larguras salvas das colunas
+  const savedColumnWidths = JSON.parse(localStorage.getItem("columnWidths"));
   const headers = table.querySelectorAll("th");
+
+  if (savedColumnWidths) {
+    headers.forEach((header, index) => {
+      if (savedColumnWidths[index]) {
+        header.style.width = savedColumnWidths[index];
+      }
+    });
+  }
+
   headers.forEach(header => {
     const resizer = document.createElement("div");
     resizer.classList.add("resizer");
@@ -285,18 +283,25 @@ function setupResizableFeatures() {
     const header = e.target.parentElement;
     const startX = e.pageX;
     const startWidth = header.offsetWidth;
-    document.addEventListener("mousemove", doDrag);
-    document.addEventListener("mouseup", stopDrag);
+
     function doDrag(e) {
       const newWidth = startWidth + (e.pageX - startX);
       if (newWidth > 40) {
         header.style.width = `${newWidth}px`;
       }
     }
+
     function stopDrag() {
       document.removeEventListener("mousemove", doDrag);
       document.removeEventListener("mouseup", stopDrag);
+
+      // Salvar as novas larguras no localStorage
+      const newWidths = Array.from(headers).map(h => h.style.width || window.getComputedStyle(h).width);
+      localStorage.setItem("columnWidths", JSON.stringify(newWidths));
     }
+
+    document.addEventListener("mousemove", doDrag);
+    document.addEventListener("mouseup", stopDrag);
   }
 }
 
@@ -314,12 +319,14 @@ function exportTasksToCSV() {
   }
 
   const columns = [
-    { key: 'title',       displayName: 'titulo' },
-    { key: 'startDate',   displayName: 'dia inicio' },
-    { key: 'endDate',     displayName: 'dia final' },
-    { key: 'description', displayName: 'descrição' },
-    { key: 'etapa',       displayName: 'etapa' },
-    { key: 'priority',    displayName: 'prioridade' }
+    { key: 'id',          displayName: 'ID' },
+    { key: 'completed',   displayName: 'Concluída' },
+    { key: 'priority',    displayName: 'Prioridade' },
+    { key: 'title',       displayName: 'Título' },
+    { key: 'startDate',   displayName: 'Data de Início' },
+    { key: 'endDate',     displayName: 'Data Final' },
+    { key: 'description', displayName: 'Descrição' },
+    { key: 'etapa',       displayName: 'Etapa' }
   ];
 
   const formatCsvCell = (cellData) => {

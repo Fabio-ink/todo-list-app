@@ -6,6 +6,11 @@ body {
   font-family: 'Roboto', Arial, sans-serif;
   margin: 20px;
   background-color: #e0f2f1; /* Azul claro */
+  background-image: url('https://i.postimg.cc/wv5bvpLh/Whats-App-Image-2025-09-25-at-08-42-49.jpg');
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  background-attachment: fixed;
+  background-size: 100px;
 }
 
 h1 {
@@ -275,17 +280,7 @@ tbody tr:hover {
    ==================================== */
 
 #fixed-logo {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000;
-}
-
-#fixed-logo img {
-  width: 80px;
-  height: auto;
-  opacity: 0.7;
-  transition: all 0.3s ease;
+  display: none;
 }
 
 /* ====================================
