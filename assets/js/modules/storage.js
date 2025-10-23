@@ -1,6 +1,9 @@
 export function getTasks() {
-  const tasks = localStorage.getItem("tasks");
-  return tasks ? JSON.parse(tasks) : [];
+  const tasksJSON = localStorage.getItem("tasks");
+  if (!tasksJSON) return [];
+  const tasks = JSON.parse(tasksJSON);
+  // Ensure all task IDs are numbers for consistency
+  return tasks.map(task => ({ ...task, id: Number(task.id) }));
 }
 
 export function updateTasks(tasks) {

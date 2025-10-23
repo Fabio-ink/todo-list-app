@@ -3,12 +3,15 @@ import {
     tableBody,
     searchBtn,
     clearBtn,
-    exportCsvBtn
+    exportCsvBtn,
+    importCsvBtn,
+    csvFileInput
 } from './modules/dom.js';
 import { getTasks, updateTasks } from './modules/storage.js';
 import { applyFilters, updateSort } from './modules/filterSort.js';
 import { saveEditMode, openSettingsMenu } from './modules/taskUI.js';
 import { exportTasksToCSV } from './modules/export.js';
+import { importTasksFromCSV } from './modules/import.js';
 import { setupResizableFeatures } from './modules/resizable.js';
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -85,3 +88,18 @@ document.querySelectorAll(".sortable").forEach(header => {
 });
 
 exportCsvBtn.addEventListener('click', exportTasksToCSV);
+
+importCsvBtn.addEventListener('click', () => {
+    console.log("Import button clicked.");
+    console.log("csvFileInput element:", csvFileInput);
+    csvFileInput.click(); // Trigger the hidden file input
+});
+
+csvFileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        importTasksFromCSV(file);
+    }
+    // Reset the input value to allow re-importing the same file
+    e.target.value = null;
+});
