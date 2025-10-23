@@ -6,7 +6,7 @@ body {
   font-family: 'Roboto', Arial, sans-serif;
   margin: 20px;
   background-color: #e0f2f1; /* Azul claro */
-  background-image: url('../img/logo.jpg');
+  background-image: url('../img/logo.png');
   background-repeat: no-repeat;
   background-position: bottom 20px right 20px;
   background-attachment: fixed;
