@@ -7,3 +7,5 @@ export const filterPriority = document.getElementById('filterPriority');
 export const searchBtn = document.getElementById('searchBtn');
 export const clearBtn = document.getElementById('clearBtn');
 export const exportCsvBtn = document.getElementById('exportCsvBtn');
+export const importCsvBtn = document.getElementById('importCsvBtn');
+export const csvFileInput = document.getElementById('csvFileInput');
