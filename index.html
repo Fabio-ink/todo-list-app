@@ -1,122 +1,118 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
+<head>
     <meta charset="UTF-8">
     <title>To-Do List Avançada</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-  </head>
+</head>
 <body>
-  <div id="fixed-logo">
-    <img src="https://i.postimg.cc/wv5bvpLh/Whats-App-Image-2025-09-25-at-08-42-49.jpg" alt="Logo da Aplicação">
-  </div>
-
-  <div class="form-container">
-    <h3 style="text-align: center; color: #0A2246; margin-bottom: 20px;">Adicionar Nova Tarefa</h3>
-    <form id="taskForm">
-      <div class="form-grid">
-        <div class="form-group gc-3">
-          <label for="title">Título:</label>
-          <input type="text" id="title" placeholder="O que precisa ser feito?" required>
-        </div>
-        <div class="form-group gc-1">
-          <label for="priority">Prioridade:</label>
-          <select id="priority" required>
-            <option value="baixa">Baixa</option>
-            <option value="media" selected>Média</option>
-            <option value="alta">Alta</option>
-          </select>
-        </div>
-        <div class="form-group gc-1">
-          <label for="startDate">Data de Início:</label>
-          <input type="date" id="startDate" required>
-        </div>
-        <div class="form-group gc-1">
-          <label for="endDate">Data Final:</label>
-          <input type="date" id="endDate" required>
-        </div>
-        <div class="form-group gc-6">
-          <label for="description">Descrição:</label>
-          <input type="text" id="description" placeholder="Adicione mais detalhes...">
-        </div>
-        <div class="form-group gc-5">
-          <label for="etapa">Etapa:</label>
-          <input type="text" id="etapa" placeholder="Qual a etapa atual?">
-        </div>
-        <div class="form-group gc-1 button-group">
-          <button type="submit" class="btn btn-primary">Adicionar</button>
-        </div>
-      </div>
-    </form>
-  </div>
-
-  <div class="export-buttons" style="margin-bottom: 20px;">
-    <button id="exportCsvBtn" class="btn">Exportar (CSV)</button>
-  </div>
-
-  <div class="filter-container">
-    <div class="filter-group">
-      <label for="filterInput">Buscar por Título/Descrição</label>
-      <input type="text" id="filterInput" placeholder="...">
+    <div class="form-container">
+        <h3 style="text-align: center; color: #0A2246; margin-bottom: 20px;">Adicionar Nova Tarefa</h3>
+        <form id="taskForm">
+            <div class="form-grid">
+                <div class="form-group gc-3">
+                    <label for="title">Título:</label>
+                    <input type="text" id="title" placeholder="O que precisa ser feito?" required>
+                </div>
+                <div class="form-group gc-1">
+                    <label for="priority">Prioridade:</label>
+                    <select id="priority" required>
+                        <option value="baixa">Baixa</option>
+                        <option value="media" selected>Média</option>
+                        <option value="alta">Alta</option>
+                    </select>
+                </div>
+                <div class="form-group gc-1">
+                    <label for="startDate">Data de Início:</label>
+                    <input type="date" id="startDate" required>
+                </div>
+                <div class="form-group gc-1">
+                    <label for="endDate">Data Final:</label>
+                    <input type="date" id="endDate" required>
+                </div>
+                <div class="form-group gc-6">
+                    <label for="description">Descrição:</label>
+                    <input type="text" id="description" placeholder="Adicione mais detalhes...">
+                </div>
+                <div class="form-group gc-5">
+                    <label for="etapa">Etapa:</label>
+                    <input type="text" id="etapa" placeholder="Qual a etapa atual?">
+                </div>
+                <div class="form-group gc-1 button-group">
+                    <button type="submit" class="btn btn-primary">Adicionar</button>
+                </div>
+            </div>
+        </form>
     </div>
-    <div class="filter-group">
-      <label for="filterStatus">Status</label>
-      <select id="filterStatus">
-        <option value="all">Todos</option>
-        <option value="pending">Pendentes</option>
-        <option value="completed">Concluídas</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <label for="filterPriority">Prioridade</label>
-      <select id="filterPriority">
-        <option value="all">Todas</option>
-        <option value="baixa">Baixa</option>
-        <option value="media">Média</option>
-        <option value="alta">Alta</option>
-      </select>
-    </div>
-    <div class="filter-buttons">
-      <button id="searchBtn" class="btn">Buscar</button>
-      <button id="clearBtn" class="btn">Limpar</button>
-    </div>
-  </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th class="col-check">Check</th>
-        <th class="col-priority sortable" data-sort="priority">Prioridade <span class="sort-icon"></span></th>
-        <th class="col-title sortable" data-sort="title">Título</th>
-        <th class="col-date sortable" data-sort="startDate">Data Início <span class="sort-icon"></span></th>
-        <th class="col-date sortable" data-sort="endDate">Data Final <span class="sort-icon"></span></th>
-        <th class="col-description">Descrição</th>
-        <th class="col-etapa">Etapa</th>
-        <th class="col-actions">Ações</th>
-      </tr>
-    </thead>
-    <tbody id="taskTableBody">
-      <!-- As tarefas serão inseridas aqui pelo JavaScript -->
-    </tbody>
-  </table>
+    <div class="export-buttons" style="margin-bottom: 20px;">
+        <button id="exportCsvBtn" class="btn">Exportar (CSV)</button>
+    </div>
 
-  <template id="taskRowTemplate">
-    <tr data-id="">
-      <td><input type="checkbox" class="checkTask"></td>
-      <td class="priority"><span class="priority-indicator"></span></td>
-      <td class="title"></td>
-      <td class="startDate"></td>
-      <td class="endDate"></td>
-      <td class="description"></td>
-      <td class="etapa"></td>
-      <td class="actionsCell">
-        <div class="settingsMenuContainer">
-          <span class="settingsIcon">⚙️</span>
+    <div class="filter-container">
+        <div class="filter-group">
+            <label for="filterInput">Buscar por Título/Descrição</label>
+            <input type="text" id="filterInput" placeholder="...">
         </div>
-      </td>
-    </tr>
-  </template>
+        <div class="filter-group">
+            <label for="filterStatus">Status</label>
+            <select id="filterStatus">
+                <option value="all">Todos</option>
+                <option value="pending">Pendentes</option>
+                <option value="completed">Concluídas</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="filterPriority">Prioridade</label>
+            <select id="filterPriority">
+                <option value="all">Todas</option>
+                <option value="baixa">Baixa</option>
+                <option value="media">Média</option>
+                <option value="alta">Alta</option>
+            </select>
+        </div>
+        <div class="filter-buttons">
+            <button id="searchBtn" class="btn">Buscar</button>
+            <button id="clearBtn" class="btn">Limpar</button>
+        </div>
+    </div>
 
-  <script src="assets/js/script.js"></script>
+    <table>
+        <thead>
+            <tr>
+                <th class="col-check">Check</th>
+                <th class="col-priority sortable" data-sort="priority">Prioridade <span class="sort-icon"></span></th>
+                <th class="col-title sortable" data-sort="title">Título</th>
+                <th class="col-date sortable" data-sort="startDate">Data Início <span class="sort-icon"></span></th>
+                <th class="col-date sortable" data-sort="endDate">Data Final <span class="sort-icon"></span></th>
+                <th class="col-description">Descrição</th>
+                <th class="col-etapa">Etapa</th>
+                <th class="col-actions">Ações</th>
+            </tr>
+        </thead>
+        <tbody id="taskTableBody">
+            <!-- As tarefas serão inseridas aqui pelo JavaScript -->
+        </tbody>
+    </table>
+
+    <template id="taskRowTemplate">
+        <tr data-id="">
+            <td><input type="checkbox" class="checkTask"></td>
+            <td class="priority"><span class="priority-indicator"></span></td>
+            <td class="title"></td>
+            <td class="startDate"></td>
+            <td class="endDate"></td>
+            <td class="description"></td>
+            <td class="etapa"></td>
+            <td class="actionsCell">
+                <div class="settingsMenuContainer">
+                    <span class="settingsIcon">⚙️</span>
+                </div>
+            </td>
+        </tr>
+    </template>
+
+    <script type="module" src="assets/js/script.js"></script>
 </body>
 </html>

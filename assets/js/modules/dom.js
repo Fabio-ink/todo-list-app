@@ -1,0 +1,9 @@
+export const form = document.getElementById("taskForm");
+export const tableBody = document.getElementById("taskTableBody");
+export const taskRowTemplate = document.getElementById("taskRowTemplate");
+export const filterInput = document.getElementById('filterInput');
+export const filterStatus = document.getElementById('filterStatus');
+export const filterPriority = document.getElementById('filterPriority');
+export const searchBtn = document.getElementById('searchBtn');
+export const clearBtn = document.getElementById('clearBtn');
+export const exportCsvBtn = document.getElementById('exportCsvBtn');

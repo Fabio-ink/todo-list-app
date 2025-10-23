@@ -6,11 +6,12 @@ body {
   font-family: 'Roboto', Arial, sans-serif;
   margin: 20px;
   background-color: #e0f2f1; /* Azul claro */
-  background-image: url('https://i.postimg.cc/wv5bvpLh/Whats-App-Image-2025-09-25-at-08-42-49.jpg');
+  background-image: url('../img/logo.jpg');
   background-repeat: no-repeat;
-  background-position: bottom right;
+  background-position: bottom 20px right 20px;
   background-attachment: fixed;
   background-size: 100px;
+  padding-bottom: 120px; /* Espaço extra para não sobrepor o logo */
 }
 
 h1 {
@@ -102,6 +103,10 @@ input, button, select {
   background-color: #016a65;
 }
 
+.export-buttons {
+  margin-bottom: 20px;
+}
+
 /* ====================================
    4. Tabela
    ==================================== */
@@ -116,6 +121,7 @@ table {
   table-layout: fixed;
   resize: horizontal;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
 }
 
 thead {
@@ -293,6 +299,12 @@ tbody tr:hover {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   margin-bottom: 25px;
+}
+
+.form-container h3 {
+  text-align: center;
+  color: #0A2246;
+  margin-bottom: 20px;
 }
 
 #taskForm {
